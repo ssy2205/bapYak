@@ -2,27 +2,31 @@ import React, { useState, useEffect } from 'react';
 import { db } from './firebase';
 import {
   collection,
-  addDoc,
   onSnapshot,
+  query,
+  orderBy,
+  where,
+  addDoc,
   updateDoc,
   doc,
   arrayUnion,
-  query,
-  orderBy,
   serverTimestamp,
-  where,
 } from 'firebase/firestore';
+import { format, isSameDay, parseISO } from 'date-fns';
+import { ko } from 'date-fns/locale';
+import { Plus, EyeOff, Users } from 'lucide-react';
 
-import BapyakForm from './BapyakForm';
+import CalendarView from './CalendarView';
 import BapyakList from './BapyakList';
 import JoinModal from './JoinModal';
-import HideModal from './HideModal';
+import PinVerificationModal from './PinVerificationModal';
+import CheckMembersModal from './CheckMembersModal';
+import CreateBapyakModal from './CreateBapyakModal'; // New import
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('create');
   const [appointments, setAppointments] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
-  // State for user info that persists across creations
   const [hostInfo, setHostInfo] = useState({
     name: '',
     studentId: '',
@@ -31,14 +35,23 @@ export default function App() {
 
   // Join Modal state
   const [joinModalOpen, setJoinModalOpen] = useState(false);
-  const [selectedAppId, setSelectedAppId] = useState(null);
+  const [selectedAppIdForJoin, setSelectedAppIdForJoin] = useState(null);
 
-  // Hide Modal state
-  const [hideModalOpen, setHideModalOpen] = useState(false);
-  const [selectedAppToHide, setSelectedAppToHide] = useState(null);
-  const [hidePin, setHidePin] = useState('');
-  const [hideError, setHideError] = useState('');
-  const [showOnlyAvailable, setShowOnlyAvailable] = useState(true);
+  // Pin Verification Modal state
+  const [pinVerificationModalOpen, setPinVerificationModalOpen] = useState(false);
+  const [pinVerificationContext, setPinVerificationContext] = useState(null); // 'hide' or 'checkMembers'
+  const [selectedAppForPinVerification, setSelectedAppForPinVerification] = useState(null);
+  const [pinInput, setPinInput] = useState('');
+  const [pinError, setPinError] = useState('');
+
+  // Check Members Modal state
+  const [checkMembersModalOpen, setCheckMembersModalOpen] = useState(false);
+  const [membersToShow, setMembersToShow] = useState([]);
+  const [appForMembersModal, setAppForMembersModal] = useState(null);
+
+  // Create Bapyak Modal state
+  const [createBapyakModalOpen, setCreateBapyakModalOpen] = useState(false);
+
 
   // Real-time data sync
   useEffect(() => {
@@ -59,11 +72,21 @@ export default function App() {
     setHostInfo(prev => ({...prev, ...newHostInfo}));
   };
 
-  const handleCreate = async (formData) => {
+  const handleDateSelect = (date) => {
+    setSelectedDate(date);
+  };
+
+  // Filter appointments for the selected date
+  const appointmentsForSelectedDate = appointments.filter(app =>
+    isSameDay(parseISO(app.date), selectedDate)
+  );
+
+  // --- Create Bapyak ---
+  const handleCreateBapyak = async (formData) => {
     try {
       await addDoc(collection(db, 'appointments'), {
         ...formData,
-        isHidden: false, // Add isHidden field on creation
+        isHidden: false,
         participants: [
           {
             name: formData.name,
@@ -76,16 +99,22 @@ export default function App() {
       });
 
       alert('밥약 생성 완료! 🎉');
-      setActiveTab('list');
+      setCreateBapyakModalOpen(false); // Close modal after creation
     } catch (e) {
       console.error(e);
       alert('에러가 발생했습니다.');
     }
   };
 
+  // --- Join Bapyak ---
+  const openJoinModal = (appId) => {
+    setSelectedAppIdForJoin(appId);
+    setJoinModalOpen(true);
+  };
+
   const handleJoinSubmit = async (joinData) => {
     try {
-      const docRef = doc(db, 'appointments', selectedAppId);
+      const docRef = doc(db, 'appointments', selectedAppIdForJoin);
       await updateDoc(docRef, {
         participants: arrayUnion({
           ...joinData,
@@ -101,118 +130,119 @@ export default function App() {
     }
   };
 
-  const handleHide = async () => {
-    if (!selectedAppToHide) return;
-    if (hidePin !== selectedAppToHide.pin) {
-      setHideError('PIN 번호가 일치하지 않습니다.');
+  // --- Pin Verification Logic ---
+  const openPinVerificationModal = (app, context) => {
+    setSelectedAppForPinVerification(app);
+    setPinVerificationContext(context);
+    setPinVerificationModalOpen(true);
+    setPinInput('');
+    setPinError('');
+  };
+
+  const closePinVerificationModal = () => {
+    setPinVerificationModalOpen(false);
+    setSelectedAppForPinVerification(null);
+    setPinVerificationContext(null);
+    setPinInput('');
+    setPinError('');
+  };
+
+  const handlePinVerification = async () => {
+    if (!selectedAppForPinVerification) return;
+
+    if (pinInput !== selectedAppForPinVerification.pin) {
+      setPinError('PIN 번호가 일치하지 않습니다.');
       return;
     }
 
     try {
-      const docRef = doc(db, 'appointments', selectedAppToHide.id);
-      await updateDoc(docRef, {
-        isHidden: true
-      });
-      setHideModalOpen(false);
-      alert('밥약이 목록에서 숨김 처리되었습니다.');
+      if (pinVerificationContext === 'hide') {
+        const docRef = doc(db, 'appointments', selectedAppForPinVerification.id);
+        await updateDoc(docRef, { isHidden: true });
+        alert('밥약이 목록에서 숨김 처리되었습니다.');
+      } else if (pinVerificationContext === 'checkMembers') {
+        setMembersToShow(selectedAppForPinVerification.participants);
+        setAppForMembersModal(selectedAppForPinVerification);
+        setCheckMembersModalOpen(true);
+      }
+      closePinVerificationModal();
     } catch (e) {
       console.error(e);
-      setHideError('숨김 처리 중 오류가 발생했습니다.');
+      setPinError('처리 중 오류가 발생했습니다.');
     }
   };
 
-  // --- Modal Control ---
-
-  const openJoinModal = (appId) => {
-    setSelectedAppId(appId);
-    setJoinModalOpen(true);
-  };
-
-  const openHideModal = (app) => {
-    setSelectedAppToHide(app);
-    setHideModalOpen(true);
-    setHideError('');
-    setHidePin('');
-  };
-  
-  const closeHideModal = () => {
-    setHideModalOpen(false);
-    setSelectedAppToHide(null);
-    setHideError('');
-    setHidePin('');
+  const closeCheckMembersModal = () => {
+    setCheckMembersModalOpen(false);
+    setMembersToShow([]);
+    setAppForMembersModal(null);
   };
 
 
   return (
     <div className="min-h-screen bg-[#FFFBF7] font-sans text-gray-800 relative pb-20">
-      <nav className="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-40 border-b border-orange-100">
-        <div className="max-w-md mx-auto px-4">
-          <div className="flex justify-between">
-            <button
-              onClick={() => setActiveTab('list')}
-              className={`flex-1 py-5 text-lg font-bold transition-all duration-300 border-b-4 ${
-                activeTab === 'list'
-                  ? 'border-orange-500 text-orange-600'
-                  : 'border-transparent text-gray-400 hover:text-orange-400'
-              }`}
-            >
-              밥약 찾기 👀
-            </button>
-            <button
-              onClick={() => setActiveTab('create')}
-              className={`flex-1 py-5 text-lg font-bold transition-all duration-300 border-b-4 ${
-                activeTab === 'create'
-                  ? 'border-orange-500 text-orange-600'
-                  : 'border-transparent text-gray-400 hover:text-orange-400'
-              }`}
-            >
-              밥약 만들기 ✍️
-            </button>
-          </div>
-        </div>
-      </nav>
-
       <main className="p-4 max-w-md mx-auto mt-4">
-        {activeTab === 'create' ? (
-          <BapyakForm onCreate={handleCreate} initialData={hostInfo} onFormChange={handleFormChange} />
-        ) : (
-          <>
-            <div className="flex justify-end items-center mb-4 px-2">
-              <label htmlFor="availability-toggle" className="mr-3 text-sm font-medium text-gray-700">
-                정원 마감 제외
-              </label>
-              <div 
-                onClick={() => setShowOnlyAvailable(!showOnlyAvailable)}
-                className={`relative inline-flex items-center h-6 rounded-full w-11 cursor-pointer transition-colors ${showOnlyAvailable ? 'bg-orange-500' : 'bg-gray-300'}`}
-              >
-                <span
-                  className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform ${showOnlyAvailable ? 'translate-x-6' : 'translate-x-1'}`}
-                />
-              </div>
-            </div>
-            <BapyakList
-              appointments={appointments}
-              showOnlyAvailable={showOnlyAvailable}
-              onJoinClick={openJoinModal}
-              onHideClick={openHideModal}
-            />
-          </>
-        )}
+        <CalendarView
+          appointments={appointments}
+          onDateSelect={handleDateSelect}
+          selectedDate={selectedDate}
+        />
+
+        {/* Appointment List Section */}
+        <div className="bg-white rounded-[2.5rem] p-6 shadow-xl border border-orange-100">
+          <h2 className="text-xl font-bold text-gray-800 mb-4">
+            {format(selectedDate, 'yyyy년 M월 d일', { locale: ko })} 밥약
+          </h2>
+          <BapyakList
+            appointments={appointmentsForSelectedDate}
+            onJoinClick={openJoinModal}
+            onHideClick={(app) => openPinVerificationModal(app, 'hide')}
+            onCheckMembersClick={(app) => openPinVerificationModal(app, 'checkMembers')}
+          />
+        </div>
       </main>
 
+      {/* Floating Action Button */}
+      <button
+        onClick={() => setCreateBapyakModalOpen(true)}
+        className="fixed bottom-6 right-6 bg-orange-500 text-white p-5 rounded-full shadow-lg hover:bg-orange-600 transition-all active:scale-95"
+        aria-label="Create new Bapyak"
+      >
+        <Plus size={28} />
+      </button>
+
+      {/* Modals */}
       <JoinModal
         isOpen={joinModalOpen}
         onClose={() => setJoinModalOpen(false)}
         onJoinSubmit={handleJoinSubmit}
       />
 
-      <HideModal
-        isOpen={hideModalOpen}
-        onClose={closeHideModal}
-        onConfirm={handleHide}
-        pin={hidePin}
-        setPin={setHidePin}
-        error={hideError}
+      <PinVerificationModal
+        isOpen={pinVerificationModalOpen}
+        onClose={closePinVerificationModal}
+        onVerify={handlePinVerification}
+        pin={pinInput}
+        setPin={setPinInput}
+        error={pinError}
+        title={pinVerificationContext === 'hide' ? '밥약 숨기기 🙈' : '참여 멤버 확인 👥'}
+        description={pinVerificationContext === 'hide' ? '이 밥약을 목록에서 숨깁니다.<br/>PIN 번호를 입력하여 확인해주세요.' : '참여 멤버를 확인하려면 PIN 번호를 입력하세요.'}
+        confirmButtonText={pinVerificationContext === 'hide' ? '숨기기 확인' : '확인'}
+        confirmButtonIcon={pinVerificationContext === 'hide' ? EyeOff : Users}
+      />
+
+      <CheckMembersModal
+        isOpen={checkMembersModalOpen}
+        onClose={closeCheckMembersModal}
+        participants={membersToShow}
+        app={appForMembersModal}
+      />
+
+      <CreateBapyakModal // Render the new modal
+        isOpen={createBapyakModalOpen}
+        onClose={() => setCreateBapyakModalOpen(false)}
+        onCreate={handleCreateBapyak}
+        initialData={hostInfo}
       />
     </div>
   );
