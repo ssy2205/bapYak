@@ -10,8 +10,10 @@ service cloud.firestore {
       // Function to check if the incoming request data has the correct schema for creation.
       function isCreateSchemaValid() {
         let data = request.resource.data;
+        let p = data.participants[0];
         return data.name is string && data.name.size() > 0 &&
                data.studentId is string &&
+               data.instagramId is string &&
                data.intro is string && data.intro.size() > 0 &&
                data.date is string &&
                data.timeSlot is string && (data.timeSlot == 'Lunch' || data.timeSlot == 'Dinner') &&
@@ -19,7 +21,10 @@ service cloud.firestore {
                data.pin is string && data.pin.size() == 4 &&
                data.isHidden == false &&
                data.participants is list && data.participants.size() == 1 &&
-               data.participants[0].isHost == true;
+               p.isHost == true &&
+               p.name == data.name &&
+               p.studentId == data.studentId &&
+               p.instaId == data.instagramId;
       }
       
       // Function to check if a user is joining (not just editing other fields).
@@ -27,7 +32,7 @@ service cloud.firestore {
         let before = resource.data;
         let after = request.resource.data;
         // Check that only the participants array is being changed by adding one new member.
-        return after.keys().hasOnly(before.keys()) &&
+        return before.keys().removeAll(['participants']).toSet() == after.keys().removeAll(['participants']).toSet() &&
                after.participants.size() == before.participants.size() + 1 &&
                // Check that the new participant is not a host.
                after.participants[after.participants.size() - 1].isHost == false;
@@ -38,7 +43,7 @@ service cloud.firestore {
       function isHiding() {
         let before = resource.data;
         let after = request.resource.data;
-        return after.keys().hasOnly(before.keys()) &&
+        return before.keys().removeAll(['isHidden']).toSet() == after.keys().removeAll(['isHidden']).toSet() &&
                before.isHidden == false &&
                after.isHidden == true;
       }

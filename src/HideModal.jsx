@@ -12,8 +12,17 @@ export default function HideModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white w-full max-w-sm rounded-[2.5rem] p-8 shadow-2xl relative">
+    <div 
+      className="fixed inset-0 z-50 grid place-items-center overflow-y-auto p-4 bg-black/40 backdrop-blur-sm animate-fade-in" 
+      aria-labelledby="modal-title" 
+      role="dialog" 
+      aria-modal="true"
+      onClick={onClose}
+    >
+      <div 
+        className="relative w-full max-w-sm rounded-[2.5rem] bg-white p-8 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         <button
           onClick={onClose}
           className="absolute top-6 right-6 text-gray-400 hover:text-gray-600"

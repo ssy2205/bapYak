@@ -10,6 +10,7 @@ import {
   query,
   orderBy,
   serverTimestamp,
+  where,
 } from 'firebase/firestore';
 
 import BapyakForm from './BapyakForm';
@@ -41,7 +42,7 @@ export default function App() {
 
   // Real-time data sync
   useEffect(() => {
-    const q = query(collection(db, 'appointments'), orderBy('createdAt', 'desc'));
+    const q = query(collection(db, 'appointments'), where("isHidden", "==", false), orderBy('createdAt', 'desc'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map((doc) => ({
         id: doc.id,
