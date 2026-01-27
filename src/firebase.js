@@ -3,14 +3,15 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
+// Using environment variables for security
 const firebaseConfig = {
-  apiKey: "AIzaSyCAOAZ6lBvySQf6bPZT2GaXHZBKUJ0YECU",
-  authDomain: "babyak-75c28.firebaseapp.com",
-  projectId: "babyak-75c28",
-  storageBucket: "babyak-75c28.appspot.com",
-  messagingSenderId: "455334005484",
-  appId: "1:455334005484:web:1c7f75c356461b58a8f3c9",
-  measurementId: "G-QGRDPXT25T"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase

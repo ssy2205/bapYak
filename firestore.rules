@@ -1,18 +1,60 @@
-rules_version='2'
+rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      // This rule allows anyone with your database reference to view, edit,
-      // and delete all data in your database. It is useful for getting
-      // started, but it is configured to expire after 30 days because it
-      // leaves your app open to attackers. At that time, all client
-      // requests to your database will be denied.
-      //
-      // Make sure to write security rules for your app before that time, or
-      // else all client requests to your database will be denied until you
-      // update your rules.
-      allow read, write: if request.time < timestamp.date(2026, 2, 26);
+    
+    // Rules for the 'appointments' collection
+    match /appointments/{appId} {
+      
+      // --- FUNCTIONS ---
+      // Function to check if the incoming request data has the correct schema for creation.
+      function isCreateSchemaValid() {
+        let data = request.resource.data;
+        return data.name is string && data.name.size() > 0 &&
+               data.studentId is string &&
+               data.intro is string && data.intro.size() > 0 &&
+               data.date is string &&
+               data.timeSlot is string && (data.timeSlot == 'Lunch' || data.timeSlot == 'Dinner') &&
+               data.maxCount is number && (data.maxCount == 2 || data.maxCount == 3 || data.maxCount == 4 || data.maxCount == 6) &&
+               data.pin is string && data.pin.size() == 4 &&
+               data.isHidden == false &&
+               data.participants is list && data.participants.size() == 1 &&
+               data.participants[0].isHost == true;
+      }
+      
+      // Function to check if a user is joining (not just editing other fields).
+      function isJoining() {
+        let before = resource.data;
+        let after = request.resource.data;
+        // Check that only the participants array is being changed by adding one new member.
+        return after.keys().hasOnly(before.keys()) &&
+               after.participants.size() == before.participants.size() + 1 &&
+               // Check that the new participant is not a host.
+               after.participants[after.participants.size() - 1].isHost == false;
+      }
+
+      // Function to check if the appointment is being hidden.
+      // We ensure that ONLY the isHidden field is being changed from false to true.
+      function isHiding() {
+        let before = resource.data;
+        let after = request.resource.data;
+        return after.keys().hasOnly(before.keys()) &&
+               before.isHidden == false &&
+               after.isHidden == true;
+      }
+
+      // --- RULES ---
+      // READ: Anyone can read an appointment as long as it is not hidden.
+      allow read: if resource.data.isHidden == false;
+
+      // CREATE: Anyone can create an appointment if the data is valid.
+      allow create: if isCreateSchemaValid();
+
+      // UPDATE: Allow updates only for two specific cases: joining or hiding.
+      allow update: if (isJoining() && resource.data.participants.size() < resource.data.maxCount) || isHiding();
+      
+      // DELETE: No one is allowed to delete a document.
+      allow delete: if false;
     }
   }
 }

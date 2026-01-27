@@ -1,45 +1,78 @@
-import { useState } from 'react';
-import { User, BookUser, Instagram } from 'lucide-react';
+import React, { useState } from 'react';
+import { User, X, Instagram } from 'lucide-react';
 
-export default function JoinModal({ onJoin, onCancel, isJoining }) {
-  const [joinerInfo, setJoinerInfo] = useState({ name: '', studentId: '', instagramId: '' });
+export default function JoinModal({ isOpen, onClose, onJoinSubmit }) {
+  const [joinData, setJoinData] = useState({
+    name: '',
+    studentId: '',
+    instaId: '',
+  });
 
-  const handleChange = (e) => {
-    setJoinerInfo({ ...joinerInfo, [e.target.id]: e.target.value });
-  };
+  if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onJoin(joinerInfo);
+  const handleSubmit = () => {
+    if (!joinData.name || !joinData.studentId || !joinData.instaId) {
+      alert('모든 정보를 입력해주세요!');
+      return;
+    }
+    onJoinSubmit(joinData);
+    // Reset form and close modal is handled by parent component
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm transform transition-all duration-300 ease-in-out scale-95 hover:scale-100">
-        <div className="p-8">
-          <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">Join Bapyak</h2>
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <input type="text" id="name" placeholder="Your Name" required onChange={handleChange} className="pl-12 w-full border-gray-300 rounded-full shadow-sm focus:ring-blue-500 focus:border-blue-500 py-3" />
-            </div>
-            <div className="relative">
-              <BookUser className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <input type="text" id="studentId" placeholder="Your Student ID" required onChange={handleChange} className="pl-12 w-full border-gray-300 rounded-full shadow-sm focus:ring-blue-500 focus:border-blue-500 py-3" />
-            </div>
-            <div className="relative">
-              <Instagram className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <input type="text" id="instagramId" placeholder="Your Instagram ID" onChange={handleChange} className="pl-12 w-full border-gray-300 rounded-full shadow-sm focus:ring-blue-500 focus:border-blue-500 py-3" />
-            </div>
-            <div className="flex items-center justify-between pt-4">
-              <button type="button" onClick={onCancel} className="text-gray-500 hover:text-gray-700 font-medium py-2 px-4 rounded-full transition-colors">
-                Cancel
-              </button>
-              <button type="submit" disabled={isJoining} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:bg-blue-300">
-                {isJoining ? 'Joining...' : 'Confirm Join'}
-              </button>
-            </div>
-          </form>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in">
+      <div className="bg-white w-full max-w-sm rounded-[2.5rem] p-8 shadow-2xl relative">
+        <button
+          onClick={onClose}
+          className="absolute top-6 right-6 text-gray-400 hover:text-gray-600"
+        >
+          <X size={24} />
+        </button>
+
+        <h3 className="text-2xl font-bold text-center mb-6">참여 정보 입력 📝</h3>
+        <div className="space-y-4">
+          <div className="relative">
+            <User className="absolute left-5 top-4 text-gray-400" size={20} />
+            <input
+              className="w-full pl-14 pr-4 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-orange-400"
+              placeholder="이름"
+              value={joinData.name}
+              onChange={(e) => setJoinData({ ...joinData, name: e.target.value })}
+            />
+          </div>
+          <div className="relative">
+            <span className="absolute left-5 top-4 text-gray-400 font-bold text-sm">
+              ID
+            </span>
+            <input
+              className="w-full pl-14 pr-4 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-orange-400"
+              placeholder="학번 (예: 24)"
+              value={joinData.studentId}
+              onChange={(e) =>
+                setJoinData({ ...joinData, studentId: e.target.value })
+              }
+            />
+          </div>
+          <div className="relative">
+            <Instagram
+              className="absolute left-5 top-4 text-gray-400"
+              size={20}
+            />
+            <input
+              className="w-full pl-14 pr-4 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-orange-400"
+              placeholder="인스타 아이디"
+              value={joinData.instaId}
+              onChange={(e) =>
+                setJoinData({ ...joinData, instaId: e.target.value })
+              }
+            />
+          </div>
+          <button
+            onClick={handleSubmit}
+            className="w-full bg-orange-500 text-white font-bold py-5 rounded-2xl mt-4 shadow-lg shadow-orange-200 active:scale-95 transition-all"
+          >
+            입력 완료!
+          </button>
         </div>
       </div>
     </div>
