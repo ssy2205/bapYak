@@ -13,18 +13,18 @@ export default function CheckMembersModal({ isOpen, onClose, participants, app }
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-sm rounded-[2.5rem] bg-white p-8 shadow-2xl"
+        className="relative w-full max-w-sm rounded-none bg-white p-8 shadow-none border border-gray-300"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
-          className="absolute top-6 right-6 text-gray-400 hover:text-gray-600"
+          className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
         >
           <X size={24} />
         </button>
 
-        <h3 className="text-2xl font-bold text-center mb-6 text-gray-700">참여 멤버 확인 👥</h3>
-        <p className="text-center text-gray-600 mb-4">
+        <h3 className="text-2xl font-bold text-center mb-6 text-gray-800">참여 멤버 확인</h3>
+        <p className="text-center text-gray-700 mb-4">
           {app?.timeSlot === 'Lunch' ? '점심' : '저녁'} 밥약 ({app?.date})
         </p>
 
@@ -32,25 +32,25 @@ export default function CheckMembersModal({ isOpen, onClose, participants, app }
           {participants.map((p, idx) => (
             <div
               key={idx}
-              className="flex items-center gap-3 bg-gray-50 border border-gray-100 p-3 rounded-2xl shadow-sm"
+              className="flex items-center gap-3 bg-gray-100 border border-gray-200 p-3 rounded-none shadow-none"
             >
-              <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 font-bold text-xs">
+              <div className="w-8 h-8 rounded-none bg-gray-200 flex items-center justify-center text-gray-800 font-bold text-xs">
                 {p.name[0]}
               </div>
               <div className="flex flex-col">
-                <span className="text-sm font-bold text-gray-700">
+                <span className="text-sm font-bold text-gray-800">
                   {p.name}{' '}
-                  <span className="text-xs font-normal text-gray-400">
+                  <span className="text-xs font-normal text-gray-600">
                     ({p.studentId})
                   </span>
                   {p.isHost && (
-                    <span className="ml-1 text-[10px] bg-orange-500 text-white px-1.5 py-0.5 rounded-full">
+                    <span className="ml-1 text-[10px] bg-black text-white px-1.5 py-0.5 rounded-none">
                       HOST
                     </span>
                   )}
                 </span>
                 {!p.isHost && p.instaId && (
-                  <span className="text-xs text-gray-400 flex items-center gap-1">
+                  <span className="text-xs text-gray-600 flex items-center gap-1">
                     <Instagram size={10} /> {p.instaId}
                   </span>
                 )}

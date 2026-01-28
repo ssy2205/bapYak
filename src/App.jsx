@@ -21,11 +21,12 @@ import BapyakList from './BapyakList';
 import JoinModal from './JoinModal';
 import PinVerificationModal from './PinVerificationModal';
 import CheckMembersModal from './CheckMembersModal';
-import CreateBapyakModal from './CreateBapyakModal'; // New import
+import CreateBapyakModal from './CreateBapyakModal';
 
 export default function App() {
   const [appointments, setAppointments] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [isCalendarFullScreen, setIsCalendarFullScreen] = useState(true); // New state for calendar layout
 
   const [hostInfo, setHostInfo] = useState({
     name: '',
@@ -74,6 +75,7 @@ export default function App() {
 
   const handleDateSelect = (date) => {
     setSelectedDate(date);
+    setIsCalendarFullScreen(false); // Shrink calendar when a date is selected
   };
 
   // Filter appointments for the selected date
@@ -180,32 +182,35 @@ export default function App() {
 
 
   return (
-    <div className="min-h-screen bg-[#FFFBF7] font-sans text-gray-800 relative pb-20">
-      <main className="p-4 max-w-md mx-auto mt-4">
+    <div className="min-h-screen bg-white font-sans text-gray-800 relative pb-20">
+      <main className={`p-4 max-w-md mx-auto mt-4 transition-all duration-500 ${isCalendarFullScreen ? 'h-screen flex flex-col justify-center' : ''}`}>
         <CalendarView
           appointments={appointments}
           onDateSelect={handleDateSelect}
           selectedDate={selectedDate}
+          isFullScreen={isCalendarFullScreen} // Pass prop to CalendarView
         />
 
         {/* Appointment List Section */}
-        <div className="bg-white rounded-[2.5rem] p-6 shadow-xl border border-orange-100">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">
-            {format(selectedDate, 'yyyy년 M월 d일', { locale: ko })} 밥약
-          </h2>
-          <BapyakList
-            appointments={appointmentsForSelectedDate}
-            onJoinClick={openJoinModal}
-            onHideClick={(app) => openPinVerificationModal(app, 'hide')}
-            onCheckMembersClick={(app) => openPinVerificationModal(app, 'checkMembers')}
-          />
-        </div>
+        {!isCalendarFullScreen && ( // Conditionally render list
+          <div className="bg-white rounded-none p-6 shadow-none border border-gray-300 mt-4">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">
+              {format(selectedDate, 'yyyy년 M월 d일', { locale: ko })} 밥약
+            </h2>
+            <BapyakList
+              appointments={appointmentsForSelectedDate}
+              onJoinClick={openJoinModal}
+              onHideClick={(app) => openPinVerificationModal(app, 'hide')}
+              onCheckMembersClick={(app) => openPinVerificationModal(app, 'checkMembers')}
+            />
+          </div>
+        )}
       </main>
 
       {/* Floating Action Button */}
       <button
         onClick={() => setCreateBapyakModalOpen(true)}
-        className="fixed bottom-6 right-6 bg-orange-500 text-white p-5 rounded-full shadow-lg hover:bg-orange-600 transition-all active:scale-95"
+        className="fixed bottom-6 right-6 bg-black text-white p-5 rounded-none shadow-lg hover:bg-gray-800 transition-all active:scale-95"
         aria-label="Create new Bapyak"
       >
         <Plus size={28} />
@@ -225,8 +230,8 @@ export default function App() {
         pin={pinInput}
         setPin={setPinInput}
         error={pinError}
-        title={pinVerificationContext === 'hide' ? '밥약 숨기기 🙈' : '참여 멤버 확인 👥'}
-        description={pinVerificationContext === 'hide' ? '이 밥약을 목록에서 숨깁니다.<br/>PIN 번호를 입력하여 확인해주세요.' : '참여 멤버를 확인하려면 PIN 번호를 입력하세요.'}
+        title={pinVerificationContext === 'hide' ? '밥약 숨기기' : '참여 멤버 확인'}
+        description={pinVerificationContext === 'hide' ? '이 밥약을 목록에서 숨깁니다. PIN 번호를 입력하여 확인해주세요.' : '참여 멤버를 확인하려면 PIN 번호를 입력하세요.'}
         confirmButtonText={pinVerificationContext === 'hide' ? '숨기기 확인' : '확인'}
         confirmButtonIcon={pinVerificationContext === 'hide' ? EyeOff : Users}
       />
@@ -238,12 +243,17 @@ export default function App() {
         app={appForMembersModal}
       />
 
-      <CreateBapyakModal // Render the new modal
+      <CreateBapyakModal
         isOpen={createBapyakModalOpen}
         onClose={() => setCreateBapyakModalOpen(false)}
         onCreate={handleCreateBapyak}
         initialData={hostInfo}
       />
+
+      {/* Bug Report/Inquiry Section */}
+      <footer className="p-4 max-w-md mx-auto mt-8 text-center text-gray-600 text-sm">
+        <p>문의 및 버그 제보: <a href="mailto:bobfriends.support@example.com" className="text-black underline">bobfriends.support@example.com</a></p>
+      </footer>
     </div>
   );
 }
