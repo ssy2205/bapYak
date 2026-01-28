@@ -25,8 +25,7 @@ import CreateBapyakModal from './CreateBapyakModal';
 
 export default function App() {
   const [appointments, setAppointments] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [isCalendarFullScreen, setIsCalendarFullScreen] = useState(true); // New state for calendar layout
+  const [selectedDate, setSelectedDate] = useState(null); // Changed to null initially
 
   const [hostInfo, setHostInfo] = useState({
     name: '',
@@ -56,12 +55,14 @@ export default function App() {
 
   // Real-time data sync
   useEffect(() => {
+    console.log('Fetching data...'); // Added for debugging
     const q = query(collection(db, 'appointments'), where("isHidden", "==", false), orderBy('createdAt', 'desc'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const data = snapshot.docs.map((doc) => {
+        const appData = { id: doc.id, ...doc.data() };
+        console.log('Fetched appointment:', appData); // Log fetched data
+        return appData;
+      });
       setAppointments(data);
     });
     return () => unsubscribe();
@@ -75,18 +76,18 @@ export default function App() {
 
   const handleDateSelect = (date) => {
     setSelectedDate(date);
-    setIsCalendarFullScreen(false); // Shrink calendar when a date is selected
+    // isCalendarFullScreen state is no longer needed, selectedDate === null will drive the layout
   };
 
   // Filter appointments for the selected date
-  const appointmentsForSelectedDate = appointments.filter(app =>
-    isSameDay(parseISO(app.date), selectedDate)
-  );
+  const appointmentsForSelectedDate = selectedDate
+    ? appointments.filter(app => isSameDay(parseISO(app.date), selectedDate))
+    : [];
 
   // --- Create Bapyak ---
   const handleCreateBapyak = async (formData) => {
     try {
-      await addDoc(collection(db, 'appointments'), {
+      const newAppointmentData = {
         ...formData,
         isHidden: false,
         participants: [
@@ -98,7 +99,9 @@ export default function App() {
           },
         ],
         createdAt: serverTimestamp(),
-      });
+      };
+      console.log('Creating appointment with:', newAppointmentData); // Log data being sent
+      await addDoc(collection(db, 'appointments'), newAppointmentData);
 
       alert('밥약 생성 완료! 🎉');
       setCreateBapyakModalOpen(false); // Close modal after creation
@@ -182,35 +185,40 @@ export default function App() {
 
 
   return (
-    <div className="min-h-screen bg-white font-sans text-gray-800 relative pb-20">
-      <main className={`p-4 max-w-md mx-auto mt-4 transition-all duration-500 ${isCalendarFullScreen ? 'h-screen flex flex-col justify-center' : ''}`}>
+    <div className="h-screen flex flex-col overflow-hidden bg-white text-black font-sans rounded-none">
+      {/* Calendar Section */}
+      <div className={`p-4 max-w-md mx-auto w-full ${selectedDate === null ? 'flex-1 flex items-center justify-center' : 'h-[40vh] transition-all duration-500'}`}>
         <CalendarView
           appointments={appointments}
           onDateSelect={handleDateSelect}
           selectedDate={selectedDate}
-          isFullScreen={isCalendarFullScreen} // Pass prop to CalendarView
+          
         />
+      </div>
 
-        {/* Appointment List Section */}
-        {!isCalendarFullScreen && ( // Conditionally render list
-          <div className="bg-white rounded-none p-6 shadow-none border border-gray-300 mt-4">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">
-              {format(selectedDate, 'yyyy년 M월 d일', { locale: ko })} 밥약
-            </h2>
+      {/* Appointment List Section */}
+      {selectedDate !== null && (
+        <div className="flex-1 overflow-y-auto p-4 max-w-md mx-auto w-full border-t-2 border-black">
+          <h2 className="text-xl font-bold text-black mb-4">
+            {format(selectedDate, 'yyyy년 M월 d일', { locale: ko })} 밥약
+          </h2>
+          {appointmentsForSelectedDate.length > 0 ? (
             <BapyakList
               appointments={appointmentsForSelectedDate}
               onJoinClick={openJoinModal}
               onHideClick={(app) => openPinVerificationModal(app, 'hide')}
               onCheckMembersClick={(app) => openPinVerificationModal(app, 'checkMembers')}
             />
-          </div>
-        )}
-      </main>
+          ) : (
+            <p className="text-center text-gray-600">선택된 날짜에 밥약이 없습니다.</p>
+          )}
+        </div>
+      )}
 
       {/* Floating Action Button */}
       <button
         onClick={() => setCreateBapyakModalOpen(true)}
-        className="fixed bottom-6 right-6 bg-black text-white p-5 rounded-none shadow-lg hover:bg-gray-800 transition-all active:scale-95"
+        className="fixed bottom-6 right-6 bg-black text-white p-5 rounded-none shadow-lg hover:bg-gray-800 transition-all active:scale-95 border-2 border-black"
         aria-label="Create new Bapyak"
       >
         <Plus size={28} />
@@ -251,8 +259,8 @@ export default function App() {
       />
 
       {/* Bug Report/Inquiry Section */}
-      <footer className="p-4 max-w-md mx-auto mt-8 text-center text-gray-600 text-sm">
-        <p>문의 및 버그 제보: <a href="mailto:bobfriends.support@example.com" className="text-black underline">bobfriends.support@example.com</a></p>
+      <footer className="p-4 max-w-md mx-auto text-center text-black text-sm">
+        <p>문의 및 버그 제보: <a href="mailto:ssy2205@naver.com" className="text-black underline">ssy2205@naver.com</a></p>
       </footer>
     </div>
   );
