@@ -13,12 +13,12 @@ export default function CheckMembersModal({ isOpen, onClose, participants, app }
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-sm rounded-none bg-white p-8 shadow-none border-2 border-black"
+        className="relative w-full max-w-sm rounded-none bg-white p-8 shadow-none border-[1.5px] border-black"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-black hover:text-gray-800 border-2 border-black rounded-none p-1"
+          className="absolute top-4 right-4 text-black hover:bg-black hover:text-white border-[1.5px] border-black rounded-none p-1"
         >
           <X size={24} />
         </button>
@@ -32,9 +32,9 @@ export default function CheckMembersModal({ isOpen, onClose, participants, app }
           {participants.map((p, idx) => (
             <div
               key={idx}
-              className="flex items-center gap-3 bg-white border-2 border-black p-3 rounded-none shadow-none"
+              className="flex items-center gap-3 bg-white border-[1.5px] border-black p-3 rounded-none shadow-none"
             >
-              <div className="w-8 h-8 rounded-none bg-black flex items-center justify-center text-white font-bold text-xs border-2 border-black">
+              <div className="w-8 h-8 rounded-none bg-black flex items-center justify-center text-white font-bold text-xs border-[1.5px] border-black">
                 {p.name[0]}
               </div>
               <div className="flex flex-col">

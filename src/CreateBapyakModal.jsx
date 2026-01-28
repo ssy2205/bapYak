@@ -63,12 +63,12 @@ export default function CreateBapyakModal({ isOpen, onClose, onCreate, initialDa
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-lg rounded-none bg-white p-8 shadow-none border-2 border-black"
+        className="relative w-full max-w-lg rounded-none bg-white p-8 shadow-none border-[1.5px] border-black"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-black hover:text-gray-800 border-2 border-black rounded-none p-1"
+          className="absolute top-4 right-4 text-black hover:bg-black hover:text-white border-[1.5px] border-black rounded-none p-1"
         >
           <X size={24} />
         </button>
@@ -82,7 +82,7 @@ export default function CreateBapyakModal({ isOpen, onClose, onCreate, initialDa
                 id="name"
                 onChange={handleChange}
                 value={formData.name}
-                className="w-full pl-16 pr-4 py-6 bg-white rounded-none border-2 border-black outline-none text-lg focus:ring-2 focus:ring-black placeholder:text-gray-500"
+                className="w-full pl-16 pr-4 py-6 bg-white rounded-none border-[1.5px] border-black outline-none text-lg focus:ring-2 focus:ring-black placeholder:text-gray-500"
                 placeholder="이름"
               />
             </div>
@@ -90,7 +90,7 @@ export default function CreateBapyakModal({ isOpen, onClose, onCreate, initialDa
               id="studentId"
               onChange={handleChange}
               value={formData.studentId}
-              className="flex-1 px-2 py-6 bg-white rounded-none border-2 border-black outline-none text-lg text-center focus:ring-2 focus:ring-black placeholder:text-gray-500"
+              className="flex-1 px-2 py-6 bg-white rounded-none border-[1.5px] border-black outline-none text-lg text-center focus:ring-2 focus:ring-black placeholder:text-gray-500"
               placeholder="학번"
             />
           </div>
@@ -101,7 +101,7 @@ export default function CreateBapyakModal({ isOpen, onClose, onCreate, initialDa
               id="instagramId"
               onChange={handleChange}
               value={formData.instagramId}
-              className="w-full pl-16 pr-4 py-6 bg-white rounded-none border-2 border-black outline-none text-lg focus:ring-2 focus:ring-black placeholder:text-gray-500"
+              className="w-full pl-16 pr-4 py-6 bg-white rounded-none border-[1.5px] border-black outline-none text-lg focus:ring-2 focus:ring-black placeholder:text-gray-500"
               placeholder="인스타 아이디 (선택)"
             />
           </div>
@@ -112,27 +112,27 @@ export default function CreateBapyakModal({ isOpen, onClose, onCreate, initialDa
               type="date"
               value={formData.date}
               onChange={(e) => handleDirectChange('date', e.target.value)}
-              className="w-full pl-16 pr-6 py-6 bg-white rounded-none border-2 border-black outline-none text-lg text-black"
+              className="w-full pl-16 pr-6 py-6 bg-white rounded-none border-[1.5px] border-black outline-none text-lg text-black"
             />
           </div>
 
           <div className="flex gap-3">
             <button
               onClick={() => handleDirectChange('timeSlot', 'Lunch')}
-              className={`flex-1 py-6 rounded-none flex items-center justify-center gap-2 font-bold text-lg border-2 transition-all ${
+              className={`flex-1 py-6 rounded-none flex items-center justify-center gap-2 font-bold text-lg border-[1.5px] transition-all ${
                 formData.timeSlot === 'Lunch'
                   ? 'bg-black text-white border-black shadow-none'
-                  : 'bg-white border-black text-black hover:bg-gray-100'
+                  : 'bg-white border-black text-black hover:bg-black hover:text-white'
               }`}
             >
               <Sun size={24} className={`${formData.timeSlot === 'Lunch' ? 'text-white' : 'text-black'}`} /> 점심
             </button>
             <button
               onClick={() => handleDirectChange('timeSlot', 'Dinner')}
-              className={`flex-1 py-6 rounded-none flex items-center justify-center gap-2 font-bold text-lg border-2 transition-all ${
+              className={`flex-1 py-6 rounded-none flex items-center justify-center gap-2 font-bold text-lg border-[1.5px] transition-all ${
                 formData.timeSlot === 'Dinner'
                   ? 'bg-black text-white border-black shadow-none'
-                  : 'bg-white border-black text-black hover:bg-gray-100'
+                  : 'bg-white border-black text-black hover:bg-black hover:text-white'
               }`}
             >
               <Moon size={24} className={`${formData.timeSlot === 'Dinner' ? 'text-white' : 'text-black'}`} /> 저녁
@@ -145,7 +145,7 @@ export default function CreateBapyakModal({ isOpen, onClose, onCreate, initialDa
               id="intro"
               onChange={handleChange}
               value={formData.intro}
-              className="w-full pl-16 pr-4 py-6 bg-white rounded-none border-2 border-black outline-none text-lg h-40 resize-none focus:ring-2 focus:ring-black placeholder:text-gray-500"
+              className="w-full pl-16 pr-4 py-6 bg-white rounded-none border-[1.5px] border-black outline-none text-lg h-40 resize-none focus:ring-2 focus:ring-black placeholder:text-gray-500"
               placeholder="메뉴나 장소, 하고 싶은 말을 적어주세요!"
             />
           </div>
@@ -155,7 +155,7 @@ export default function CreateBapyakModal({ isOpen, onClose, onCreate, initialDa
               <Users className="absolute left-5 top-6 text-black" size={24} />
               <select
                 onChange={(e) => handleDirectChange('maxCount', Number(e.target.value))}
-                className="w-full pl-16 pr-4 py-6 bg-white rounded-none border-2 border-black outline-none text-lg appearance-none text-black"
+                className="w-full pl-16 pr-4 py-6 bg-white rounded-none border-[1.5px] border-black outline-none text-lg appearance-none text-black"
               >
                 <option value="2">2명</option>
                 <option value="3">3명</option>
@@ -170,7 +170,7 @@ export default function CreateBapyakModal({ isOpen, onClose, onCreate, initialDa
                 id="pin"
                 onChange={handleChange}
                 value={formData.pin}
-                className="w-full pl-16 pr-4 py-6 bg-white rounded-none border-2 border-black outline-none text-lg focus:ring-2 focus:ring-black placeholder:text-gray-500"
+                className="w-full pl-16 pr-4 py-6 bg-white rounded-none border-[1.5px] border-black outline-none text-lg focus:ring-2 focus:ring-black placeholder:text-gray-500"
                 placeholder="PIN 4자리"
               />
             </div>
@@ -178,7 +178,7 @@ export default function CreateBapyakModal({ isOpen, onClose, onCreate, initialDa
 
           <button
             onClick={handleCreateClick}
-            className="w-full bg-black text-white font-black py-6 rounded-none text-xl shadow-none active:scale-[0.98] transition-all mt-4 flex justify-center items-center gap-2 border-2 border-black"
+            className="w-full bg-black text-white font-black py-6 rounded-none text-xl shadow-none active:scale-[0.98] transition-all mt-4 flex justify-center items-center gap-2 border-[1.5px] border-black hover:bg-white hover:text-black"
           >
             <CheckCircle size={28} /> 생성 완료!
           </button>

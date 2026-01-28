@@ -24,7 +24,7 @@ export default function BapyakList({ appointments, onJoinClick, onHideClick, onC
         return (
           <div
             key={app.id}
-            className={`bg-white rounded-none p-6 shadow-none border-2 border-black relative overflow-hidden`}
+            className={`bg-white rounded-none p-8 shadow-none border-[1.5px] border-black relative overflow-hidden`}
           >
             {/* Menu Button */}
             <div className="absolute top-4 right-4 z-10">
@@ -33,19 +33,19 @@ export default function BapyakList({ appointments, onJoinClick, onHideClick, onC
                   e.stopPropagation();
                   setOpenMenuId(openMenuId === app.id ? null : app.id);
                 }}
-                className="p-2 rounded-none hover:bg-gray-100 transition-colors text-black border-2 border-black"
+                className="p-2 rounded-none hover:bg-black hover:text-white transition-colors text-black border-[1.5px] border-black"
               >
                 <MoreHorizontal size={20} />
               </button>
               {openMenuId === app.id && (
-                <div className="absolute right-0 mt-2 w-40 bg-white rounded-none shadow-lg py-1 z-20 border-2 border-black">
+                <div className="absolute right-0 mt-2 w-40 bg-white rounded-none shadow-lg py-1 z-20 border-[1.5px] border-black">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       onHideClick(app);
                       setOpenMenuId(null);
                     }}
-                    className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-black hover:bg-gray-100"
+                    className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-black hover:bg-black hover:text-white"
                   >
                     <EyeOff size={16} /> 밥약 숨기기
                   </button>
@@ -55,7 +55,7 @@ export default function BapyakList({ appointments, onJoinClick, onHideClick, onC
                       onCheckMembersClick(app);
                       setOpenMenuId(null);
                     }}
-                    className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-black hover:bg-gray-100"
+                    className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-black hover:bg-black hover:text-white"
                   >
                     <Users size={16} /> 참여 멤버 확인
                   </button>
@@ -77,7 +77,7 @@ export default function BapyakList({ appointments, onJoinClick, onHideClick, onC
                   {host?.instaId && <Instagram size={16} className="ml-1 text-black"/>}
                 </div>
               </div>
-              <div className={`flex flex-col items-center px-3 py-2 rounded-none border-2 border-black transition-colors ${isFull ? 'bg-black' : 'bg-white'}`}>
+              <div className={`flex flex-col items-center px-3 py-2 rounded-none border-[1.5px] border-black transition-colors ${isFull ? 'bg-black' : 'bg-white'}`}>
                 <span className={`text-xs font-bold transition-colors ${isFull ? 'text-white' : 'text-black'}`}>참여 현황</span>
                 <span className={`text-xl font-black transition-colors ${isFull ? 'text-white' : 'text-black'}`}>
                   {app.participants.length}
@@ -87,14 +87,14 @@ export default function BapyakList({ appointments, onJoinClick, onHideClick, onC
               </div>
             </div>
 
-            <p className="text-black mb-6 bg-white p-5 rounded-none leading-relaxed border-2 border-black">
+            <p className="text-black mb-6 bg-white p-5 rounded-none leading-relaxed border-[1.5px] border-black">
               {app.intro}
             </p>
 
             <button
               onClick={() => onJoinClick(app.id)}
               disabled={isFull}
-              className="w-full text-white py-5 rounded-none font-bold text-lg active:scale-[0.98] transition-all shadow-none disabled:bg-gray-300 disabled:text-gray-600 disabled:cursor-not-allowed bg-black hover:bg-gray-800 border-2 border-black"
+              className="w-full text-white py-5 rounded-none font-bold text-lg active:scale-[0.98] transition-all shadow-none disabled:bg-gray-300 disabled:text-gray-600 disabled:cursor-not-allowed bg-black hover:bg-white hover:text-black border-[1.5px] border-black"
             >
               {isFull ? '정원 마감' : '나도 참여할래!'}
             </button>

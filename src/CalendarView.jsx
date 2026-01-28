@@ -36,13 +36,13 @@ export default function CalendarView({ appointments, onDateSelect, selectedDate 
   const renderHeader = () => {
     return (
       <div className="flex justify-between items-center mb-4 px-2">
-        <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} className="p-2 rounded-none hover:bg-gray-100 transition-colors border-2 border-black">
+        <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} className="p-2 rounded-none hover:bg-black hover:text-white transition-colors border-[1.5px] border-black">
           <ChevronLeft size={24} className="text-black" />
         </button>
         <h2 className="text-xl font-bold text-black">
           {format(currentMonth, 'yyyy년 M월', { locale: ko })}
         </h2>
-        <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} className="p-2 rounded-none hover:bg-gray-100 transition-colors border-2 border-black">
+        <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} className="p-2 rounded-none hover:bg-black hover:text-white transition-colors border-[1.5px] border-black">
           <ChevronRight size={24} className="text-black" />
         </button>
       </div>
@@ -85,15 +85,15 @@ export default function CalendarView({ appointments, onDateSelect, selectedDate 
         weekDays.push(
           <div
             key={cloneDay.toISOString()}
-            className={`p-2 text-center cursor-pointer rounded-none transition-all duration-200 border-2 border-white
+            className={`p-2 text-center cursor-pointer rounded-none transition-all duration-200 border-[1.5px] border-white
               ${!isSameMonth(cloneDay, currentMonth) ? 'text-gray-300' : 'text-black'}
-              ${isToday ? 'font-bold border-black' : ''}
+              ${isToday ? 'font-bold border-[1.5px] border-black' : ''}
               ${isSelected ? 'bg-black text-white' : 'hover:bg-gray-100'}
               relative flex flex-col items-center justify-center`}
             onClick={() => onDateSelect(cloneDay)}
           >
-            <span>{format(cloneDay, 'd')}</span>
-            {appointmentStatus === 'available' && <div className="w-4 h-4 rounded-full bg-red-500 absolute top-1 right-1 z-50 border-2 border-black" />}
+            <span className="text-lg font-semibold">{format(cloneDay, 'd')}</span>
+            {appointmentStatus === 'available' && <div className="w-4 h-4 rounded-full bg-red-500 absolute top-1 right-1 z-50 border-[1.5px] border-black" />}
           </div>
         );
         day = addDays(day, 1);
@@ -108,7 +108,7 @@ export default function CalendarView({ appointments, onDateSelect, selectedDate 
   };
 
   return (
-    <div className="bg-white rounded-none p-6 shadow-xl border-2 border-black h-full flex flex-col">
+    <div className="bg-white rounded-none p-6 shadow-xl border-[1.5px] border-black h-full flex flex-col">
       {renderHeader()}
       {renderDays()}
       {renderCells()}

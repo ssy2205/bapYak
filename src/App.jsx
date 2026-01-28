@@ -185,20 +185,21 @@ export default function App() {
 
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-white text-black font-sans rounded-none">
-      {/* Calendar Section */}
-      <div className={`p-4 max-w-md mx-auto w-full ${selectedDate === null ? 'flex-1 flex items-center justify-center' : 'h-[40vh] transition-all duration-500'}`}>
-        <CalendarView
-          appointments={appointments}
-          onDateSelect={handleDateSelect}
-          selectedDate={selectedDate}
-          
-        />
+    <div className="h-screen flex flex-col overflow-hidden bg-white text-black font-sans rounded-none lg:grid lg:grid-cols-2">
+      {/* Left Column: Calendar */}
+      <div className={`w-full ${selectedDate === null ? 'flex-1 flex items-center justify-center lg:col-span-2' : 'h-[40vh] transition-all duration-500 p-4'}`}>
+        <div className={`${selectedDate === null ? 'w-full h-full' : 'max-w-md mx-auto w-full h-full'}`}> {/* Inner div to constrain width and center */}
+          <CalendarView
+            appointments={appointments}
+            onDateSelect={handleDateSelect}
+            selectedDate={selectedDate}
+          />
+        </div>
       </div>
 
-      {/* Appointment List Section */}
+      {/* Right Column: Appointment List (only visible when date is selected) */}
       {selectedDate !== null && (
-        <div className="flex-1 overflow-y-auto p-4 max-w-md mx-auto w-full border-t-2 border-black">
+        <div className="flex-1 overflow-y-auto p-4 max-w-md mx-auto w-full border-t-[1.5px] border-black lg:border-t-0 lg:border-l-[1.5px]">
           <h2 className="text-xl font-bold text-black mb-4">
             {format(selectedDate, 'yyyy년 M월 d일', { locale: ko })} 밥약
           </h2>
@@ -218,7 +219,7 @@ export default function App() {
       {/* Floating Action Button */}
       <button
         onClick={() => setCreateBapyakModalOpen(true)}
-        className="fixed bottom-6 right-6 bg-black text-white p-5 rounded-none shadow-lg hover:bg-gray-800 transition-all active:scale-95 border-2 border-black"
+        className="fixed bottom-6 right-6 bg-black text-white p-5 rounded-none shadow-lg hover:bg-white hover:text-black transition-all active:scale-95 border-[1.5px] border-black"
         aria-label="Create new Bapyak"
       >
         <Plus size={28} />
