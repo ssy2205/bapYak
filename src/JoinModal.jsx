@@ -25,7 +25,7 @@ export default function JoinModal({ isOpen, onClose, onJoinSubmit }) {
 
   return (
     <div
-      className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in"
       onClick={onClose}
     >
       <div
@@ -34,10 +34,12 @@ export default function JoinModal({ isOpen, onClose, onJoinSubmit }) {
       >
         {/* 닫기 버튼 */}
         <button
-          onClick={onClose}
-          className="absolute top-6 right-6 text-black hover:bg-black hover:text-white border-[2px] border-black transition-colors p-2 z-20"
+          onClick={(e) => {
+            onClose();
+          }}
+          className="absolute top-6 right-6 text-black hover:bg-black hover:text-white border-[2.5px] border-black transition-colors p-2 z-[2010] cursor-pointer bg-white" 
         >
-          <X size={28} />
+          <X size={32} />
         </button>
 
         <h3 className="text-3xl font-black text-center mb-10 text-black uppercase tracking-tighter">

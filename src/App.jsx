@@ -194,7 +194,7 @@ const handleDateSelect = (date) => {
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-white text-black font-sans rounded-none lg:grid lg:grid-cols-2">
       {/* ★ 최상단 사이트 제목 (Header) */}
-    <header className="w-full border-b-[3px] border-black py-6 bg-white z-[120]">
+    <header className="w-full border-b-[3px] border-black py-6 bg-white z-[120] relative">
       <h1 className="text-3xl md:text-4xl font-black text-center tracking-tighter uppercase">
         🍚밥팅 - 밥약 매칭 사이트
       </h1>
@@ -235,7 +235,7 @@ const handleDateSelect = (date) => {
       {/* Floating Action Button */}
       <button
         onClick={() => setCreateBapyakModalOpen(true)}
-        className="fixed bottom-6 right-6 bg-black text-white p-5 rounded-none shadow-lg hover:bg-white hover:text-black transition-all active:scale-95 border-[1.5px] border-black"
+        className="fixed bottom-6 right-6 bg-black text-white p-5 rounded-none shadow-lg hover:bg-white hover:text-black transition-all active:scale-95 border-[1.5px] border-black z-[1000] cursor-pointer"
         aria-label="Create new Bapyak"
       >
         <Plus size={28} />
