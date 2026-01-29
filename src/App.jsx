@@ -198,6 +198,9 @@ const handleDateSelect = (date) => {
       <h1 className="text-3xl md:text-4xl font-black text-center tracking-tighter uppercase">
         🍚밥팅 - 밥약 매칭 사이트
       </h1>
+      <h2 className="text-lg text-[#bc0000] md:text-xl font-bold text-center tracking-tighter">
+        for KNU MED
+      </h2>
     </header>
       {/* Left Column: Calendar */}
         <div className={`w-full transition-all duration-500 flex flex-col ${selectedDate === null ? 'flex-1 h-full lg:col-span-2' : 'h-[40vh] p-4'}`}>
