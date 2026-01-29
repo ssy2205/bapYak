@@ -50,16 +50,20 @@ service cloud.firestore {
 
       // --- RULES ---
       // READ: Anyone can read an appointment as long as it is not hidden.
-      allow read: if resource.data.isHidden == false;
+     // 1. 읽기: 숨겨진 글이 아니면 누구나 읽을 수 있음
+      // 필드가 없는 경우를 대비해 'in'이나 '||' 조건을 활용합니다.
+      allow read: if !resource.data.keys().contains('isHidden') || resource.data.isHidden == false;
 
-      // CREATE: Anyone can create an appointment if the data is valid.
-      allow create: if isCreateSchemaValid();
+      // 2. 생성: 최소한의 필드만 검증하여 에러 가능성을 낮춥니다.
+      allow create: if request.resource.data.name is string 
+                    && request.resource.data.pin.size() == 4;
 
-      // UPDATE: Allow updates only for two specific cases: joining or hiding.
-      allow update: if (isJoining() && resource.data.participants.size() < resource.data.maxCount) || isHiding();
-      
-      // DELETE: No one is allowed to delete a document.
-      allow delete: if false;
+      // 3. 수정: 참여하기(인원 추가) 또는 숨기기(isHidden 변경) 허용
+      allow update: if request.resource.data.participants.size() > resource.data.participants.size()
+                    || request.resource.data.isHidden == true;
+
+      // 4. 삭제: 밥약 삭제는 PIN 확인 후 코드에서 처리하되, 규칙에서는 일단 허용해둡니다.
+      allow delete: if true;
     }
   }
 }

@@ -24,7 +24,7 @@ export default function PinVerificationModal({
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-sm rounded-none bg-white p-8 shadow-none border-[1.5px] border-black"
+        className="relative w-full max-w-sm rounded-none bg-[#fffbf0] p-8 shadow-none border-[1.5px] border-black"
         onClick={(e) => e.stopPropagation()}
       >
         <button
