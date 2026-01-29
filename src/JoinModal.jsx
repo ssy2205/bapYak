@@ -85,7 +85,7 @@ export default function JoinModal({ isOpen, onClose, onJoinSubmit }) {
             onClick={handleSubmit}
             className="w-full bg-black text-white font-black h-20 rounded-none text-2xl mt-8 border-[2px] border-black hover:bg-white hover:text-black transition-all active:translate-x-1 active:translate-y-1 active:shadow-none shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex justify-center items-center gap-3"
           >
-            <CheckCircle size={32} /> 나도 참여할래!
+            <CheckCircle size={32} /> 참여하기!
           </button>
         </div>
       </div>

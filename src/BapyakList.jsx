@@ -75,7 +75,7 @@ export default function BapyakList({ appointments, onJoinClick, onHideClick, onC
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-2 text-black">
                   <div className="flex items-center gap-1.5">
                     <User size={16} />
-                    <span className="font-bold">{host?.name} ({host?.studentId})</span>
+                    <span className="font-bold">{host?.name} ({host?.studentId}학번)</span>
                   </div>
                   
                   {host?.instaId && (
