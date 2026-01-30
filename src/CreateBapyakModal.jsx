@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  User, Lock, AlignLeft, Users, Calendar, Sun, Moon, Instagram, CheckCircle, X,
+  User, Lock, AlignLeft, Users, Calendar, Sun, Moon, Instagram, CheckCircle, X, Mail
 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -9,6 +9,7 @@ export default function CreateBapyakModal({ isOpen, onClose, onCreate, initialDa
     name: initialData.name,
     studentId: initialData.studentId,
     instagramId: initialData.instagramId,
+    email: '', // Add email field
     intro: '',
     date: format(new Date(), 'yyyy-MM-dd'),
     timeSlot: 'Lunch',
@@ -37,12 +38,12 @@ export default function CreateBapyakModal({ isOpen, onClose, onCreate, initialDa
   };
 
   const handleCreateClick = () => {
-    if (!formData.name || !formData.intro || !formData.pin) {
+    if (!formData.name || !formData.intro || !formData.pin || !formData.email) {
       alert('필수 항목을 모두 입력해주세요!');
       return;
     }
     onCreate(formData);
-    setFormData(prev => ({...prev, intro: '', pin: ''}));
+    setFormData(prev => ({ ...prev, intro: '', pin: '' }));
   };
 
   // 공통 스타일: 그리드 레이아웃 적용 및 높이 고정
@@ -74,7 +75,7 @@ export default function CreateBapyakModal({ isOpen, onClose, onCreate, initialDa
           <h2 className="text-4xl font-black mb-12 text-center text-black uppercase tracking-tighter">
             새 밥약
           </h2>
-          
+
           <div className="space-y-6">
             {/* 1행: 이름 & 학번 (2단 레이아웃) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -93,6 +94,12 @@ export default function CreateBapyakModal({ isOpen, onClose, onCreate, initialDa
               <input id="instagramId" onChange={handleChange} value={formData.instagramId} className={inputStyle} placeholder="인스타그램 ID" />
             </div>
 
+            {/* Email Input */}
+            <div className={gridContainerStyle}>
+              <div className={iconContainerStyle}><Mail size={28} /></div>
+              <input type="email" id="email" onChange={handleChange} value={formData.email} className={inputStyle} placeholder="이메일 (알림용)" />
+            </div>
+
             {/* 3행: 날짜 선택 */}
             <div className={gridContainerStyle}>
               <div className={iconContainerStyle}><Calendar size={28} /></div>
@@ -103,21 +110,19 @@ export default function CreateBapyakModal({ isOpen, onClose, onCreate, initialDa
             <div className="flex gap-6">
               <button
                 onClick={() => handleDirectChange('timeSlot', 'Lunch')}
-                className={`flex-1 py-8 rounded-none flex items-center justify-center gap-3 font-black text-xl border-[2px] border-black transition-all ${
-                  formData.timeSlot === 'Lunch' 
-                    ? 'bg-white text-black hover:bg-gray-50 shadow-none'
-                    : 'bg-black text-white translate-x-[-4px] translate-y-[-4px] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]' 
-                }`}
+                className={`flex-1 py-8 rounded-none flex items-center justify-center gap-3 font-black text-xl border-[2px] border-black transition-all ${formData.timeSlot === 'Lunch'
+                  ? 'bg-white text-black hover:bg-gray-50 shadow-none'
+                  : 'bg-black text-white translate-x-[-4px] translate-y-[-4px] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]'
+                  }`}
               >
                 <Sun size={32} /> 점심
               </button>
               <button
                 onClick={() => handleDirectChange('timeSlot', 'Dinner')}
-                className={`flex-1 py-8 rounded-none flex items-center justify-center gap-3 font-black text-xl border-[2px] border-black transition-all ${
-                  formData.timeSlot === 'Dinner' 
-                    ?  'bg-white text-black hover:bg-gray-50 shadow-none'
-                    : 'bg-black text-white translate-x-[-4px] translate-y-[-4px] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]' 
-                }`}
+                className={`flex-1 py-8 rounded-none flex items-center justify-center gap-3 font-black text-xl border-[2px] border-black transition-all ${formData.timeSlot === 'Dinner'
+                  ? 'bg-white text-black hover:bg-gray-50 shadow-none'
+                  : 'bg-black text-white translate-x-[-4px] translate-y-[-4px] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]'
+                  }`}
               >
                 <Moon size={32} /> 저녁
               </button>

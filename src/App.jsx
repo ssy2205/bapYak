@@ -14,7 +14,8 @@ import {
 } from 'firebase/firestore';
 import { format, isSameDay, parseISO } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { Plus, EyeOff, Users } from 'lucide-react';
+import { Plus, EyeOff, Users, Mail } from 'lucide-react';
+import { notifyParticipants } from './utils/notification'; // Import utility
 
 import CalendarView from './CalendarView';
 import BapyakList from './BapyakList';
@@ -32,6 +33,7 @@ export default function App() {
     name: '',
     studentId: '',
     instagramId: '',
+    email: '', // Add email to state
   });
 
   // Join Modal state
@@ -103,6 +105,7 @@ export default function App() {
             name: formData.name,
             studentId: formData.studentId,
             instaId: formData.instagramId,
+            email: formData.email, // Add email
             isHost: true,
           },
         ],
@@ -128,6 +131,10 @@ export default function App() {
   const handleJoinSubmit = async (joinData) => {
     try {
       const docRef = doc(db, 'appointments', selectedAppIdForJoin);
+
+      // 현재 밥약 정보 가져오기 (알림 트리거 체크용)
+      const currentApp = appointments.find(app => app.id === selectedAppIdForJoin);
+
       await updateDoc(docRef, {
         participants: arrayUnion({
           ...joinData,
@@ -137,6 +144,20 @@ export default function App() {
 
       setJoinModalOpen(false);
       alert('참여 완료! 밥약에서 만나요 👋');
+
+      // 풀방(Full) 체크
+      if (currentApp) {
+        // 방금 참여한 인원까지 포함하여 계산
+        const currentCount = currentApp.participants.length;
+        const maxCount = currentApp.maxCount;
+
+        if (currentCount + 1 === maxCount) {
+          // Cloud Functions가 'update' 이벤트를 감지하여 자동으로 알림을 보냅니다.
+          console.log('밥약 매칭 완료! 이메일 발송이 예약되었습니다 (Server-side).');
+          // notifyParticipants(updatedApp); // 더 이상 클라이언트에서 호출하지 않아도 됨 (하지만 로그용으로 남겨둘 수도 있음)
+        }
+      }
+
     } catch (e) {
       console.error(e);
       alert('참여 중 오류가 발생했습니다.');
@@ -281,7 +302,9 @@ export default function App() {
 
       {/* Bug Report/Inquiry Section */}
       <footer className="p-4 max-w-md mx-auto text-center text-black text-sm lg:col-span-2">
-        <p>문의 및 버그 제보: <a href="mailto:ssy2205@naver.com" className="text-black underline">ssy2205@naver.com</a></p>
+        <p>문의 및 버그 제보: <a href="mailto:ssy060604@gmail.com" className="text-black underline">ssy2205@naver.com</a></p>
+        <p>이메일 알림 기능을 유지하려면 비용이 들어갑니다🥹</p>
+        <p>후배에게 커피를 사주세요: <a href="https://qr.kakaopay.com/FFw7bhUqa" className="text-black underline">https://qr.kakaopay.com/FFw7bhUqa</a></p>
       </footer>
     </div>
   );

@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
-import { User, X, Instagram, CheckCircle } from 'lucide-react';
+import { User, X, Instagram, CheckCircle, Mail } from 'lucide-react';
 
 export default function JoinModal({ isOpen, onClose, onJoinSubmit }) {
   const [joinData, setJoinData] = useState({
     name: '',
     studentId: '',
     instaId: '',
+    email: '', // Add email field
   });
 
   if (!isOpen) return null;
 
   const handleSubmit = () => {
-    if (!joinData.name || !joinData.studentId || !joinData.instaId) {
+    if (!joinData.name || !joinData.studentId || !joinData.instaId || !joinData.email) {
       alert('모든 정보를 입력해주세요!');
       return;
     }
@@ -37,7 +38,7 @@ export default function JoinModal({ isOpen, onClose, onJoinSubmit }) {
           onClick={(e) => {
             onClose();
           }}
-          className="absolute top-6 right-6 text-black hover:bg-black hover:text-white border-[2.5px] border-black transition-colors p-2 z-[2010] cursor-pointer bg-white" 
+          className="absolute top-6 right-6 text-black hover:bg-black hover:text-white border-[2.5px] border-black transition-colors p-2 z-[2010] cursor-pointer bg-white"
         >
           <X size={32} />
         </button>
@@ -77,6 +78,18 @@ export default function JoinModal({ isOpen, onClose, onJoinSubmit }) {
               placeholder="인스타그램 ID"
               value={joinData.instaId}
               onChange={(e) => setJoinData({ ...joinData, instaId: e.target.value })}
+            />
+          </div>
+
+          {/* 이메일 입력 */}
+          <div className={gridContainerStyle}>
+            <div className={iconContainerStyle}><Mail size={28} /></div>
+            <input
+              className={inputStyle}
+              type="email"
+              placeholder="이메일 (알림용)"
+              value={joinData.email}
+              onChange={(e) => setJoinData({ ...joinData, email: e.target.value })}
             />
           </div>
 
