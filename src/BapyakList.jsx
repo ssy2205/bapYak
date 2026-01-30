@@ -47,7 +47,7 @@ export default function BapyakList({ appointments, onJoinClick, onHideClick, onC
                     }}
                     className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-black hover:bg-black hover:text-white whitespace-nowrap"
                   >
-                    <EyeOff size={16} /> 밥약 숨기기
+                    <EyeOff size={16} /> 밥약 삭제
                   </button>
                   <button
                     onClick={(e) => {
@@ -67,7 +67,7 @@ export default function BapyakList({ appointments, onJoinClick, onHideClick, onC
             <div className="flex justify-between items-start mb-4 mt-2">
               <div>
                 <h3 className="text-xl font-bold text-black flex items-center gap-2">
-                  {app.timeSlot === 'Lunch' ? <Sun size={20} className="text-black"/> : <Moon size={20} className="text-black"/>}
+                  {app.timeSlot === 'Lunch' ? <Sun size={20} className="text-black" /> : <Moon size={20} className="text-black" />}
                   {app.timeSlot === 'Lunch' ? '점심' : '저녁'}
                   <Dot size={20} className={statusDotColor} />
                 </h3>
@@ -77,10 +77,10 @@ export default function BapyakList({ appointments, onJoinClick, onHideClick, onC
                     <User size={16} />
                     <span className="font-bold">{host?.name} ({host?.studentId}학번)</span>
                   </div>
-                  
+
                   {host?.instaId && (
                     <div className="flex items-center gap-1 text-sm bg-gray-50 px-2 py-0.5">
-                      <Instagram size={14} className="text-black"/>
+                      <Instagram size={14} className="text-black" />
                       <span className="font-medium">@{host.instaId}</span>
                     </div>
                   )}

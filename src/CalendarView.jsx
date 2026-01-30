@@ -42,7 +42,7 @@ export default function CalendarView({ appointments, onDateSelect, selectedDate 
       </div>
     );
   };
-  
+
   const renderCells = () => {
     const monthStart = startOfMonth(currentMonth);
     const monthEnd = endOfMonth(monthStart);
@@ -67,28 +67,30 @@ export default function CalendarView({ appointments, onDateSelect, selectedDate 
             className={`
               relative flex-1 h-full border-[1px] border-black cursor-pointer transition-all duration-500 ease-in-out
               ${!isSameMonth(cloneDay, currentMonth) ? 'bg-gray-100 text-gray-300' : 'bg-white text-black'}
-              ${isSelected 
-                ? 'bg-white text-black z-50 translate-x-[-4px] translate-y-[-4px] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]' 
-                : isToday 
-                  ? 'bg-[#fffbf0] text-black z-10' // 오늘 날짜: 아이보리 배경
-                  : !isSameMonth(cloneDay, currentMonth) 
-                    ? 'bg-gray-100 text-gray-300' 
-                    : 'bg-white text-black hover:bg-gray-50 z-10'}
+              ${isSelected
+                ? 'bg-white text-black z-50 translate-x-[-4px] translate-y-[-4px] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]'
+                : appointmentStatus === 'available'
+                  ? 'bg-[#E8EDFF] text-black z-10'
+                  : isToday
+                    ? 'bg-[#fffbf0] text-black z-10' // 오늘 날짜: 아이보리 배경
+                    : !isSameMonth(cloneDay, currentMonth)
+                      ? 'bg-gray-100 text-gray-300'
+                      : 'bg-white text-black hover:bg-gray-50 z-10'}
             `}
           >
-           
-            
+
+
             <span className="text-lg font-bold">{format(cloneDay, 'd')}</span>
 
             {appointmentStatus === 'available' && (
-              <div 
-                style={{ 
-                  position: 'absolute', 
-                  top: '4px', 
-                  right: '4px', 
-                  width: '6px', 
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '4px',
+                  right: '4px',
+                  width: '6px',
                   height: '6px',
-                  backgroundColor: '#f95c5c', 
+                  backgroundColor: '#f95c5c',
                   borderRadius: '50%',
                   zIndex: 60
                 }}
@@ -99,7 +101,7 @@ export default function CalendarView({ appointments, onDateSelect, selectedDate 
         );
         day = addDays(day, 1);
       }
-      
+
       rows.push(
         /* ★ weekDays 변수를 사용하여 한 주를 구성 */
         <div className="flex-1 grid grid-cols-7" key={day.toISOString()}>

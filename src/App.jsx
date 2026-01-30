@@ -193,7 +193,7 @@ export default function App() {
       if (pinVerificationContext === 'hide') {
         const docRef = doc(db, 'appointments', selectedAppForPinVerification.id);
         await updateDoc(docRef, { isHidden: true });
-        alert('밥약이 목록에서 숨김 처리되었습니다.');
+        alert('밥약이 삭제되었습니다.');
       } else if (pinVerificationContext === 'checkMembers') {
         setMembersToShow(selectedAppForPinVerification.participants);
         setAppForMembersModal(selectedAppForPinVerification);
@@ -280,9 +280,9 @@ export default function App() {
         pin={pinInput}
         setPin={setPinInput}
         error={pinError}
-        title={pinVerificationContext === 'hide' ? '밥약 숨기기' : '참여 멤버 확인'}
-        description={pinVerificationContext === 'hide' ? '이 밥약을 목록에서 숨깁니다. PIN 번호를 입력하여 확인해주세요.' : '참여 멤버를 확인하려면 PIN 번호를 입력하세요.'}
-        confirmButtonText={pinVerificationContext === 'hide' ? '숨기기 확인' : '확인'}
+        title={pinVerificationContext === 'hide' ? '밥약 삭제' : '참여 멤버 확인'}
+        description={pinVerificationContext === 'hide' ? '이 밥약을 목록에서 삭제합니다. PIN 번호를 입력하여 확인해주세요.' : '참여 멤버를 확인하려면 PIN 번호를 입력하세요.'}
+        confirmButtonText={pinVerificationContext === 'hide' ? '삭제 확인' : '확인'}
         confirmButtonIcon={pinVerificationContext === 'hide' ? EyeOff : Users}
       />
 
@@ -303,8 +303,8 @@ export default function App() {
       {/* Bug Report/Inquiry Section */}
       <footer className="p-4 max-w-md mx-auto text-center text-black text-sm lg:col-span-2">
         <p>문의 및 버그 제보: <a href="mailto:ssy060604@gmail.com" className="text-black underline">ssy060604@gmail.com</a></p>
-        <p>이메일 알림 기능을 유지하려면 비용이 들어갑니다🥹</p>
-        <p>후배에게 커피를 사주세요: <a href="https://qr.kakaopay.com/FFw7bhUqa" className="text-black underline">https://qr.kakaopay.com/FFw7bhUqa</a></p>
+        <p>서버와 이메일 알림 기능을 유지하려면 비용이 들어갑니다</p>
+        <p>서버 유지에 도움을 주세요🥹: <a href="https://qr.kakaopay.com/FFw7bhUqa" className="text-black underline">https://qr.kakaopay.com/FFw7bhUqa</a></p>
       </footer>
     </div>
   );
