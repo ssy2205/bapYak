@@ -302,7 +302,7 @@ export default function App() {
 
       {/* Bug Report/Inquiry Section */}
       <footer className="p-4 max-w-md mx-auto text-center text-black text-sm lg:col-span-2">
-        <p>문의 및 버그 제보: <a href="mailto:ssy060604@gmail.com" className="text-black underline">ssy2205@naver.com</a></p>
+        <p>문의 및 버그 제보: <a href="mailto:ssy060604@gmail.com" className="text-black underline">ssy060604@gmail.com</a></p>
         <p>이메일 알림 기능을 유지하려면 비용이 들어갑니다🥹</p>
         <p>후배에게 커피를 사주세요: <a href="https://qr.kakaopay.com/FFw7bhUqa" className="text-black underline">https://qr.kakaopay.com/FFw7bhUqa</a></p>
       </footer>
