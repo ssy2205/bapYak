@@ -11,7 +11,7 @@ export default function HowToUse() {
         {
             icon: <UserPlus size={48} className="mb-4" />,
             title: "2. 밥약 생성 또는 참여",
-            description: "우측 하단의 + 버튼으로 새로운 밥약을 만들거나, 기존 밥약에 참여하세요."
+            description: "좌측 상단의 + 버튼으로 새로운 밥약을 만들거나, 기존 밥약에 참여하세요."
         },
         {
             icon: <Shield size={48} className="mb-4" />,
