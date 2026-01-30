@@ -22,6 +22,7 @@ import JoinModal from './JoinModal';
 import PinVerificationModal from './PinVerificationModal';
 import CheckMembersModal from './CheckMembersModal';
 import CreateBapyakModal from './CreateBapyakModal';
+import HowToUse from './HowToUse';
 
 export default function App() {
   const [appointments, setAppointments] = useState([]);
@@ -71,20 +72,20 @@ export default function App() {
   // --- Event Handlers ---
 
   const handleFormChange = (newHostInfo) => {
-    setHostInfo(prev => ({...prev, ...newHostInfo}));
+    setHostInfo(prev => ({ ...prev, ...newHostInfo }));
   };
 
   // App.jsx 내부의 handleDateSelect 함수 수정
-const handleDateSelect = (date) => {
-  // 만약 이미 선택된 날짜를 또 눌렀다면?
-  if (selectedDate && isSameDay(date, selectedDate)) {
-    // null로 만들어서 '전체 캘린더' 모드로 돌아갑니다.
-    setSelectedDate(null);
-  } else {
-    // 다른 날짜를 눌렀다면 해당 날짜를 선택합니다.
-    setSelectedDate(date);
-  }
-};
+  const handleDateSelect = (date) => {
+    // 만약 이미 선택된 날짜를 또 눌렀다면?
+    if (selectedDate && isSameDay(date, selectedDate)) {
+      // null로 만들어서 '전체 캘린더' 모드로 돌아갑니다.
+      setSelectedDate(null);
+    } else {
+      // 다른 날짜를 눌렀다면 해당 날짜를 선택합니다.
+      setSelectedDate(date);
+    }
+  };
 
   // Filter appointments for the selected date
   const appointmentsForSelectedDate = selectedDate
@@ -192,30 +193,30 @@ const handleDateSelect = (date) => {
 
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-white text-black font-sans rounded-none lg:grid lg:grid-cols-2">
+    <div className="min-h-screen flex flex-col bg-white text-black font-sans rounded-none lg:grid lg:grid-cols-2">
       {/* ★ 최상단 사이트 제목 (Header) */}
-    <header className="w-full border-b-[3px] border-black py-6 bg-white z-[120] relative">
-      <h1 className="text-3xl md:text-4xl font-black text-center tracking-tighter uppercase">
-        🍚밥팅 - 밥약 매칭 사이트
-      </h1>
-      <h2 className="text-lg text-[#bc0000] md:text-xl font-bold text-center tracking-tighter">
-        for KNU MED
-      </h2>
-    </header>
+      <header className="w-full border-b-[3px] border-black py-6 bg-white z-[120] relative lg:col-span-2">
+        <h1 className="text-3xl md:text-4xl font-black text-center tracking-tighter uppercase">
+          🍚밥팅 - 밥약 매칭 사이트
+        </h1>
+        <h2 className="text-lg text-[#bc0000] md:text-xl font-bold text-center tracking-tighter">
+          for KNU MED
+        </h2>
+      </header>
       {/* Left Column: Calendar */}
-        <div className={`w-full transition-all duration-500 flex flex-col ${selectedDate === null ? 'flex-1 h-full lg:col-span-2' : 'h-[40vh] p-4'}`}>
-          <div className="w-full h-full"> 
-            <CalendarView
-              appointments={appointments}
-              onDateSelect={handleDateSelect}
-              selectedDate={selectedDate}
-            />
-          </div>
+      <div className={`w-full transition-all duration-500 flex flex-col ${selectedDate === null ? 'flex-1 lg:col-span-2' : 'h-[40vh] p-4'} lg:min-h-[500px]`}>
+        <div className="w-full h-full">
+          <CalendarView
+            appointments={appointments}
+            onDateSelect={handleDateSelect}
+            selectedDate={selectedDate}
+          />
         </div>
-      
+      </div>
+
       {/* Right Column: Appointment List (only visible when date is selected) */}
       {selectedDate !== null && (
-        <div className="flex-1 overflow-y-auto p-4 max-w-md mx-auto w-full animate-fade-in-up lg:border-l-[1.5px] border-black">
+        <div className="flex-1 p-4 max-w-md mx-auto w-full animate-fade-in-up lg:border-l-[1.5px] border-black lg:min-h-[500px]">
           <h2 className="text-xl font-black text-black mb-6 uppercase tracking-tight border-b-2 border-black pb-2 inline-block">
             {format(selectedDate, 'yyyy년 M월 d일', { locale: ko })} 밥약
           </h2>
@@ -231,6 +232,9 @@ const handleDateSelect = (date) => {
           )}
         </div>
       )}
+
+      {/* How To Use Section */}
+      <HowToUse />
 
       {/* Floating Action Button */}
       <button
@@ -276,7 +280,7 @@ const handleDateSelect = (date) => {
       />
 
       {/* Bug Report/Inquiry Section */}
-      <footer className="p-4 max-w-md mx-auto text-center text-black text-sm">
+      <footer className="p-4 max-w-md mx-auto text-center text-black text-sm lg:col-span-2">
         <p>문의 및 버그 제보: <a href="mailto:ssy2205@naver.com" className="text-black underline">ssy2205@naver.com</a></p>
       </footer>
     </div>
