@@ -49,6 +49,12 @@ exports.sendFullNotification = onDocumentUpdated({
 
         // 2. 모든 참여자에게 이메일 발송
         const participants = afterData.participants;
+
+        // 참여자 목록 문자열 생성
+        const participantsList = participants.map((p, index) =>
+            `${index + 1}. ${p.name} (${p.studentId}) - @${p.instaId}`
+        ).join('\n');
+
         const emailPromises = participants.map((participant) => {
             if (!participant.email) {
                 logger.warn(`User ${participant.name} has no email.`);
@@ -59,7 +65,7 @@ exports.sendFullNotification = onDocumentUpdated({
                 from: '"밥팅 알리미" <noreply@bobting.com>',
                 to: participant.email,
                 subject: `[밥팅] '${afterData.name}' 밥약 매칭 완료! (${afterData.date})`,
-                text: `안녕하세요 ${participant.name}님,\n\n신청하신 밥약 '${afterData.name}'의 멤버가 모두 모였습니다!\n\n일시: ${afterData.date} ${afterData.timeSlot === 'Lunch' ? '점심' : '저녁'}\n장소 및 메뉴: ${afterData.intro}\n\n즐거운 식사 되세요! 🍚`,
+                text: `안녕하세요 ${participant.name}님,\n\n신청하신 밥약 '${afterData.name}'의 멤버가 모두 모였습니다!\n\n[밥약 정보]\n일시: ${afterData.date} ${afterData.timeSlot === 'Lunch' ? '점심' : '저녁'}\n장소 및 메뉴: ${afterData.intro}\n\n[참여자 목록]\n${participantsList}\n\n서로 연락해서 즐거운 식사 되세요! 🍚`,
             };
 
             return transporter.sendMail(mailOptions)
