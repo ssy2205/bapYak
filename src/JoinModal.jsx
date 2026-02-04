@@ -61,8 +61,8 @@ export default function JoinModal({ isOpen, onClose, onJoinSubmit, appointment }
               onClick={() => !isSeniorFull && setJoinData({ ...joinData, role: 'Senior' })}
               disabled={isSeniorFull}
               className={`flex-1 py-4 rounded-none flex items-center justify-center gap-2 font-black text-xl border-[2px] border-black transition-all ${joinData.role === 'Senior'
-                ? 'bg-black text-white'
-                : 'bg-white text-black hover:bg-gray-50'
+                ? 'bg-white text-black hover:bg-gray-50 shadow-none'
+                : 'bg-black text-white translate-x-[-4px] translate-y-[-4px] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]'
                 } ${isSeniorFull ? 'opacity-50 cursor-not-allowed bg-gray-100 text-gray-400' : ''}`}
             >
               🎓 선배 {isSeniorFull && '(마감)'}
@@ -71,8 +71,8 @@ export default function JoinModal({ isOpen, onClose, onJoinSubmit, appointment }
               onClick={() => !isJuniorFull && setJoinData({ ...joinData, role: 'Junior' })}
               disabled={isJuniorFull}
               className={`flex-1 py-4 rounded-none flex items-center justify-center gap-2 font-black text-xl border-[2px] border-black transition-all ${joinData.role === 'Junior'
-                ? 'bg-black text-white'
-                : 'bg-white text-black hover:bg-gray-50'
+                ? 'bg-white text-black hover:bg-gray-50 shadow-none'
+                : 'bg-black text-white translate-x-[-4px] translate-y-[-4px] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]'
                 } ${isJuniorFull ? 'opacity-50 cursor-not-allowed bg-gray-100 text-gray-400' : ''}`}
             >
               🐣 후배 {isJuniorFull && '(마감)'}
