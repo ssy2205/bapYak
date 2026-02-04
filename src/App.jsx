@@ -15,7 +15,7 @@ import {
 import { format, isSameDay, parseISO } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { Plus, EyeOff, Users, Mail } from 'lucide-react';
-import { notifyParticipants } from './utils/notification'; // Import utility
+
 
 import CalendarView from './CalendarView';
 import BapyakList from './BapyakList';
@@ -29,12 +29,15 @@ export default function App() {
   const [appointments, setAppointments] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null); // Changed to null initially
 
-  const [hostInfo, setHostInfo] = useState({
+  /* 
+    State for host info - currently static, but can be expanded to load from local storage or auth
+  */
+  const initialHostInfo = {
     name: '',
     studentId: '',
     instagramId: '',
-    email: '', // Add email to state
-  });
+    email: '',
+  };
 
   // Join Modal state
   const [joinModalOpen, setJoinModalOpen] = useState(false);
@@ -73,9 +76,7 @@ export default function App() {
 
   // --- Event Handlers ---
 
-  const handleFormChange = (newHostInfo) => {
-    setHostInfo(prev => ({ ...prev, ...newHostInfo }));
-  };
+
 
   // App.jsx 내부의 handleDateSelect 함수 수정
   const handleDateSelect = (date) => {
@@ -155,7 +156,7 @@ export default function App() {
         if (currentCount + 1 === maxCount) {
           // Cloud Functions가 'update' 이벤트를 감지하여 자동으로 알림을 보냅니다.
           console.log('밥약 매칭 완료! 이메일 발송이 예약되었습니다 (Server-side).');
-          // notifyParticipants(updatedApp); // 더 이상 클라이언트에서 호출하지 않아도 됨 (하지만 로그용으로 남겨둘 수도 있음)
+
         }
       }
 
@@ -299,7 +300,7 @@ export default function App() {
         isOpen={createBapyakModalOpen}
         onClose={() => setCreateBapyakModalOpen(false)}
         onCreate={handleCreateBapyak}
-        initialData={hostInfo}
+        initialData={initialHostInfo}
       />
 
       {/* Bug Report/Inquiry Section */}
