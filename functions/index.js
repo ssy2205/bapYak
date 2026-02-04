@@ -36,23 +36,31 @@ exports.sendFullNotification = onDocumentUpdated({
     const beforeData = event.data.before.data();
     const afterData = event.data.after.data();
 
-    const maxCount = afterData.maxCount;
-    const beforeCount = beforeData.participants.length;
-    const afterCount = afterData.participants.length;
+    const maxSenior = afterData.maxSenior || (afterData.maxCount ? afterData.maxCount / 2 : 1);
+    const maxJunior = afterData.maxJunior || (afterData.maxCount ? afterData.maxCount / 2 : 1);
+
+    const seniorCount = afterData.participants.filter(p => p.role === 'Senior').length;
+    const juniorCount = afterData.participants.filter(p => p.role === 'Junior').length;
+
+    const beforeSeniorCount = beforeData.participants.filter(p => p.role === 'Senior').length;
+    const beforeJuniorCount = beforeData.participants.filter(p => p.role === 'Junior').length;
+
+    const isFullNow = seniorCount >= maxSenior && juniorCount >= maxJunior;
+    const wasFullBefore = beforeSeniorCount >= maxSenior && beforeJuniorCount >= maxJunior;
 
     // 1. 로직 체크:
-    // - 이전에는 꽉 차지 않았고 (beforeCount < maxCount)
-    // - 지금 막 꽉 찼을 때 (afterCount === maxCount)
-    if (beforeCount < maxCount && afterCount === maxCount) {
+    // - 이전에는 꽉 차지 않았고 (!wasFullBefore)
+    // - 지금 막 꽉 찼을 때 (isFullNow)
+    if (!wasFullBefore && isFullNow) {
 
-        logger.info(`[${afterData.name}] 밥약이 매칭되었습니다! (${event.params.appointmentId})`);
+        logger.info(`[${afterData.name}] 밥약이 매칭되었습니다! (${event.params.appointmentId}). 선배: ${seniorCount}/${maxSenior}, 후배: ${juniorCount}/${maxJunior}`);
 
         // 2. 모든 참여자에게 이메일 발송
         const participants = afterData.participants;
 
         // 참여자 목록 문자열 생성
         const participantsList = participants.map((p, index) =>
-            `${index + 1}. ${p.name} (${p.studentId}) - @${p.instaId}`
+            `${index + 1}. [${p.role === 'Senior' ? '선배' : '후배'}] ${p.name} (${p.studentId}) - @${p.instaId}`
         ).join('\n');
 
         const emailPromises = participants.map((participant) => {

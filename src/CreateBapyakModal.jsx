@@ -14,6 +14,7 @@ export default function CreateBapyakModal({ isOpen, onClose, onCreate, initialDa
     date: format(new Date(), 'yyyy-MM-dd'),
     timeSlot: 'Lunch',
     maxCount: 2,
+    hostRole: 'Senior', // Add hostRole default
     pin: '',
   });
 
@@ -42,7 +43,15 @@ export default function CreateBapyakModal({ isOpen, onClose, onCreate, initialDa
       alert('필수 항목을 모두 입력해주세요!');
       return;
     }
-    onCreate(formData);
+
+    const splitCount = formData.maxCount / 2;
+    const finalData = {
+      ...formData,
+      maxSenior: splitCount,
+      maxJunior: splitCount,
+    };
+
+    onCreate(finalData);
     setFormData(prev => ({ ...prev, intro: '', pin: '' }));
   };
 
@@ -140,15 +149,37 @@ export default function CreateBapyakModal({ isOpen, onClose, onCreate, initialDa
               />
             </div>
 
-            {/* 6행: 인원수 & PIN (2단 레이아웃) */}
+            {/* 6행: 내 역할 (선배/후배) */}
+            <div className="flex gap-6">
+              <button
+                onClick={() => handleDirectChange('hostRole', 'Senior')}
+                className={`flex-1 py-4 rounded-none flex items-center justify-center gap-3 font-black text-xl border-[2px] border-black transition-all ${formData.hostRole === 'Senior'
+                  ? 'bg-white text-black hover:bg-gray-50 shadow-none'
+                  : 'bg-black text-white translate-x-[-4px] translate-y-[-4px] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]'
+                  }`}
+              >
+                🎓 선배
+              </button>
+              <button
+                onClick={() => handleDirectChange('hostRole', 'Junior')}
+                className={`flex-1 py-4 rounded-none flex items-center justify-center gap-3 font-black text-xl border-[2px] border-black transition-all ${formData.hostRole === 'Junior'
+                  ? 'bg-white text-black hover:bg-gray-50 shadow-none'
+                  : 'bg-black text-white translate-x-[-4px] translate-y-[-4px] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]'
+                  }`}
+              >
+                🐣 후배
+              </button>
+            </div>
+
+            {/* 7행: 인원수 & PIN (2단 레이아웃) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className={gridContainerStyle}>
                 <div className={iconContainerStyle}><Users size={28} /></div>
-                <select onChange={(e) => handleDirectChange('maxCount', Number(e.target.value))} className={`${inputStyle} appearance-none font-bold cursor-pointer text-center`}>
-                  <option value="2">2명</option>
-                  <option value="4">4명</option>
-                  <option value="6">6명</option>
-                  <option value="8">8명</option>
+                <select onChange={(e) => handleDirectChange('maxCount', Number(e.target.value))} className={`${inputStyle} appearance-none font-bold cursor-pointer text-center text-sm`} value={formData.maxCount}>
+                  <option value="2">2명 (선배1 : 후배1)</option>
+                  <option value="4">4명 (선배2 : 후배2)</option>
+                  <option value="6">6명 (선배3 : 후배3)</option>
+                  <option value="8">8명 (선배4 : 후배4)</option>
                 </select>
               </div>
               <div className={gridContainerStyle}>

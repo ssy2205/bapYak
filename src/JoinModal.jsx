@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
 import { User, X, Instagram, CheckCircle, Mail } from 'lucide-react';
 
-export default function JoinModal({ isOpen, onClose, onJoinSubmit }) {
+export default function JoinModal({ isOpen, onClose, onJoinSubmit, appointment }) {
   const [joinData, setJoinData] = useState({
     name: '',
     studentId: '',
     instaId: '',
-    email: '', // Add email field
+    email: '',
+    role: '', // Add role
   });
 
   if (!isOpen) return null;
 
+  // Calculate current counts
+  const seniorCount = appointment?.participants?.filter(p => p.role === 'Senior').length || 0;
+  const juniorCount = appointment?.participants?.filter(p => p.role === 'Junior').length || 0;
+  const isSeniorFull = appointment && seniorCount >= (appointment.maxSenior || 999);
+  const isJuniorFull = appointment && juniorCount >= (appointment.maxJunior || 999);
+
   const handleSubmit = () => {
-    if (!joinData.name || !joinData.studentId || !joinData.instaId || !joinData.email) {
+    if (!joinData.name || !joinData.studentId || !joinData.instaId || !joinData.email || !joinData.role) {
       alert('모든 정보를 입력해주세요!');
       return;
     }
@@ -48,6 +55,30 @@ export default function JoinModal({ isOpen, onClose, onJoinSubmit }) {
         </h3>
 
         <div className="space-y-6">
+          {/* 역할 선택 (선배/후배) */}
+          <div className="flex gap-4">
+            <button
+              onClick={() => !isSeniorFull && setJoinData({ ...joinData, role: 'Senior' })}
+              disabled={isSeniorFull}
+              className={`flex-1 py-4 rounded-none flex items-center justify-center gap-2 font-black text-xl border-[2px] border-black transition-all ${joinData.role === 'Senior'
+                ? 'bg-black text-white'
+                : 'bg-white text-black hover:bg-gray-50'
+                } ${isSeniorFull ? 'opacity-50 cursor-not-allowed bg-gray-100 text-gray-400' : ''}`}
+            >
+              🎓 선배 {isSeniorFull && '(마감)'}
+            </button>
+            <button
+              onClick={() => !isJuniorFull && setJoinData({ ...joinData, role: 'Junior' })}
+              disabled={isJuniorFull}
+              className={`flex-1 py-4 rounded-none flex items-center justify-center gap-2 font-black text-xl border-[2px] border-black transition-all ${joinData.role === 'Junior'
+                ? 'bg-black text-white'
+                : 'bg-white text-black hover:bg-gray-50'
+                } ${isJuniorFull ? 'opacity-50 cursor-not-allowed bg-gray-100 text-gray-400' : ''}`}
+            >
+              🐣 후배 {isJuniorFull && '(마감)'}
+            </button>
+          </div>
+
           {/* 이름 입력 */}
           <div className={gridContainerStyle}>
             <div className={iconContainerStyle}><User size={28} /></div>

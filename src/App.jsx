@@ -105,7 +105,8 @@ export default function App() {
             name: formData.name,
             studentId: formData.studentId,
             instaId: formData.instagramId,
-            email: formData.email, // Add email
+            email: formData.email,
+            role: formData.hostRole, // Add host role
             isHost: true,
           },
         ],
@@ -271,6 +272,7 @@ export default function App() {
         isOpen={joinModalOpen}
         onClose={() => setJoinModalOpen(false)}
         onJoinSubmit={handleJoinSubmit}
+        appointment={appointments.find(app => app.id === selectedAppIdForJoin)}
       />
 
       <PinVerificationModal

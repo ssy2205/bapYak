@@ -17,9 +17,19 @@ export default function BapyakList({ appointments, onJoinClick, onHideClick, onC
   return (
     <div className="space-y-4 pb-10">
       {appointments.map((app) => {
-        const isFull = app.participants.length >= app.maxCount;
+        const seniorCount = app.participants.filter(p => p.role === 'Senior').length;
+        const juniorCount = app.participants.filter(p => p.role === 'Junior').length;
+
+        // Backward compatibility: if maxSenior/maxJunior missing, use maxCount/2 or similar logic, or just fallback
+        const maxSenior = app.maxSenior || app.maxCount / 2 || 1;
+        const maxJunior = app.maxJunior || app.maxCount / 2 || 1;
+
+        const isSeniorFull = seniorCount >= maxSenior;
+        const isJuniorFull = juniorCount >= maxJunior;
+        const isAbsolutelyFull = isSeniorFull && isJuniorFull;
+
         const host = app.participants.find(p => p.isHost);
-        const statusDotColor = isFull ? 'text-green-600' : 'text-red-600';
+        const statusDotColor = isAbsolutelyFull ? 'text-green-600' : 'text-red-600';
 
         return (
           <div
@@ -76,6 +86,10 @@ export default function BapyakList({ appointments, onJoinClick, onHideClick, onC
                   <div className="flex items-center gap-1.5">
                     <User size={16} />
                     <span className="font-bold">{host?.name} ({host?.studentId}학번)</span>
+                    {/* Host Role Badge */}
+                    <span className="text-xs bg-black text-white px-1.5 py-0.5 ml-1">
+                      {host?.role === 'Senior' ? '선배' : '후배'}
+                    </span>
                   </div>
 
                   {host?.instaId && (
@@ -86,13 +100,23 @@ export default function BapyakList({ appointments, onJoinClick, onHideClick, onC
                   )}
                 </div>
               </div>
-              <div className={`flex flex-col items-center px-3 py-2 rounded-none border-[1.5px] border-black transition-colors ${isFull ? 'bg-black' : 'bg-white'}`}>
-                <span className={`text-xs font-bold transition-colors ${isFull ? 'text-white' : 'text-black'}`}>참여 현황</span>
-                <span className={`text-xl font-black transition-colors ${isFull ? 'text-white' : 'text-black'}`}>
-                  {app.participants.length}
-                  <span className="text-gray-400">/</span>
-                  {app.maxCount}
-                </span>
+
+              {/* Counts Display */}
+              <div className={`flex flex-col gap-1`}>
+                {/* Senior Count */}
+                <div className={`flex items-center space-x-2 px-3 py-1 border-[1.5px] border-black transition-colors ${isSeniorFull ? 'bg-gray-100 text-gray-500' : 'bg-white text-black'}`}>
+                  <span className="text-xs font-bold w-6">선배</span>
+                  <span className="text-sm font-black">
+                    {seniorCount} <span className="text-gray-400">/</span> {maxSenior}
+                  </span>
+                </div>
+                {/* Junior Count */}
+                <div className={`flex items-center space-x-2 px-3 py-1 border-[1.5px] border-black transition-colors ${isJuniorFull ? 'bg-gray-100 text-gray-500' : 'bg-white text-black'}`}>
+                  <span className="text-xs font-bold w-6">후배</span>
+                  <span className="text-sm font-black">
+                    {juniorCount} <span className="text-gray-400">/</span> {maxJunior}
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -102,10 +126,10 @@ export default function BapyakList({ appointments, onJoinClick, onHideClick, onC
 
             <button
               onClick={() => onJoinClick(app.id)}
-              disabled={isFull}
+              disabled={isAbsolutelyFull}
               className="w-full text-white py-5 rounded-none font-bold text-lg active:scale-[0.98] transition-all shadow-none disabled:bg-gray-300 disabled:text-gray-600 disabled:cursor-not-allowed bg-black hover:bg-white hover:text-black border-[1.5px] border-black"
             >
-              {isFull ? '정원 마감' : '참여하기'}
+              {isAbsolutelyFull ? '정원 마감' : '참여하기'}
             </button>
           </div>
         );
